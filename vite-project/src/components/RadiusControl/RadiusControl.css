@@ -1,0 +1,42 @@
+.radius-control {
+  margin-bottom: 2rem;
+  background: #f7fafc;
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.radius-control input {
+  margin-left: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #2d3748;
+  font-size: 0.95rem;
+  width: 100px;
+  transition: all 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+}
+
+.radius-control input:hover {
+  border-color: #646cff;
+}
+
+.radius-control input:focus {
+  outline: none;
+  border-color: #646cff;
+  box-shadow: 0 0 0 3px rgba(100, 108, 255, 0.2);
+}
+
+.radius-control input::-webkit-outer-spin-button,
+.radius-control input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.radius-control label {
+  font-weight: 600;
+  color: #4a5568;
+} 
