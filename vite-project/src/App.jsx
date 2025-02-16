@@ -24,7 +24,7 @@ function App() {
         <div className="search-controls">
           <div className="address-input">
             <LoadScript 
-              googleMapsApiKey="AIzaSyCExTp8r8aszeyxMO7JMbonn1JZdFJGK4s"
+              googleMapsApiKey="REDACTED"
               libraries={["places"]}
             >
               <RadiusControl 
