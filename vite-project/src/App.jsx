@@ -1,47 +1,57 @@
-import { useState } from 'react'
-import { LoadScript } from '@react-google-maps/api';
-import Map from './components/Map/Map';
-import RadiusControl from './components/RadiusControl/RadiusControl';
+import { useState, useEffect } from 'react'
 import { defaultCenter } from './components/Map/mapStyles';
+import Toolbar from './components/Toolbar/Toolbar';
+import Home from './components/Home/Home';
+import AirQualityInfo from './components/AirQualityInfo/AirQualityInfo';
+import { LoadScript } from '@react-google-maps/api';
 import './App.css'
 
+// Define libraries array outside component
+const libraries = ["places"];
+
 function App() {
-  const [count, setCount] = useState(0)
-  const [radius, setRadius] = useState(5);
   const [center, setCenter] = useState(defaultCenter);
 
-  const handleRadiusChange = (e) => {
-    const value = e.target.value;
-    if (value === '' || parseFloat(value) > 0) {
-      setRadius(value);
-    }
+  const handlePlaceSelect = (location) => {
+    setCenter(location);
   };
 
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      document.documentElement.style.setProperty('--x', `${x}%`);
+      document.documentElement.style.setProperty('--y', `${y}%`);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Determine which page to show based on current path
+  const path = window.location.pathname;
+
   return (
-    <>
-      <h1>React + Google Maps</h1>
-      <div className="card">
-        <div className="search-controls">
-          <div className="address-input">
-            <LoadScript 
-              googleMapsApiKey="AIzaSyCExTp8r8aszeyxMO7JMbonn1JZdFJGK4s"
-              libraries={["places"]}
-            >
-              <RadiusControl 
-                radius={radius} 
-                onRadiusChange={handleRadiusChange}
-              />
-              <Map center={center} radius={radius} />
-            </LoadScript>
-          </div>
-        </div>
-        
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </div>
-    </>
-  )
+    <LoadScript 
+      googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+      libraries={libraries}
+    >
+      <Toolbar />
+      {path === '/' ? (
+        <Home 
+          center={center}
+          handlePlaceSelect={handlePlaceSelect}
+        />
+      ) : path === '/info' ? (
+        <AirQualityInfo />
+      ) : (
+        <Home 
+          center={center}
+          handlePlaceSelect={handlePlaceSelect}
+        />
+      )}
+    </LoadScript>
+  );
 }
 
-export default App 
+export default App; 

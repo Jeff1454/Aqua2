@@ -1,54 +1,52 @@
 import { GoogleMap } from '@react-google-maps/api';
 import { mapStyles } from './mapStyles';
-import { getZoomLevel } from '../../utils/mapUtils';
-import { useState, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 
-const Map = ({ center, radius }) => {
+const Map = ({ center, showAirQuality }) => {
   const [map, setMap] = useState(null);
-  const [marker, setMarker] = useState(null);
+  const [airQualityLayer, setAirQualityLayer] = useState(null);
 
-  const onLoad = useCallback((map) => {
+  const onLoad = (map) => {
     setMap(map);
-  }, []);
-
-  const handleMapClick = useCallback((e) => {
-    // Remove previous marker if exists
-    if (marker) {
-      marker.setMap(null);
-    }
-
-    const scale = Math.max(0.5, (20 - map.getZoom()) / 10);
     
-    // Create custom marker
-    const newMarker = new google.maps.Marker({
-      position: e.latLng,
-      map: map,
-      icon: {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 5 * scale,
-        fillColor: '#000bde',
-        fillOpacity: 1,
-        strokeColor: 'beige',
-        strokeWeight: 1,
+    // Create the air quality layer
+    const layer = new window.google.maps.ImageMapType({
+      getTileUrl: function(coord, zoom) {
+        return `https://tiles.aqicn.org/tiles/usepa-aqi/${zoom}/${coord.x}/${coord.y}.png?token=YOUR_AQICN_TOKEN`;
       },
-      zIndex: 1000, // Ensure it's above water features
+      tileSize: new window.google.maps.Size(256, 256),
+      maxZoom: 18,
+      minZoom: 3,
+      name: 'Air Quality'
     });
+    
+    setAirQualityLayer(layer);
+  };
 
-    setMarker(newMarker);
-  }, [map, marker]);
+  // Update air quality layer when showAirQuality changes
+  useEffect(() => {
+    if (map && airQualityLayer) {
+      if (showAirQuality) {
+        map.overlayMapTypes.push(airQualityLayer);
+      } else {
+        map.overlayMapTypes.clear();
+      }
+    }
+  }, [map, airQualityLayer, showAirQuality]);
 
   return (
-    <GoogleMap
-      mapContainerStyle={mapStyles}
-      zoom={getZoomLevel(parseFloat(radius) || 5)}
-      center={center}
-      onLoad={onLoad}
-      onClick={handleMapClick}
-      options={{
-        mapTypeId: 'terrain',
-      }}
-    />
+    <div className="map-container">
+      <GoogleMap
+        mapContainerStyle={mapStyles}
+        zoom={12}
+        center={center}
+        onLoad={onLoad}
+        options={{
+          clickableIcons: false
+        }}
+      />
+    </div>
   );
 };
 
-export default Map; 
+export default Map;
