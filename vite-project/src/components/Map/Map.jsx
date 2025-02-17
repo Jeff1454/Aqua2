@@ -2,7 +2,7 @@ import { GoogleMap } from '@react-google-maps/api';
 import { mapStyles } from './mapStyles';
 import { useState, useEffect } from 'react';
 
-const Map = ({ center, showAirQuality }) => {
+const Map = ({ center, showAirQuality, zoom }) => {
   const [map, setMap] = useState(null);
   const [airQualityLayer, setAirQualityLayer] = useState(null);
 
@@ -38,7 +38,7 @@ const Map = ({ center, showAirQuality }) => {
     <div className="map-container">
       <GoogleMap
         mapContainerStyle={mapStyles}
-        zoom={12}
+        zoom={zoom}
         center={center}
         onLoad={onLoad}
         options={{

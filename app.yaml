@@ -8,8 +8,11 @@ automatic_scaling:
   min_instances: 1
   max_instances: 10
 
+env_variables:
+  NODE_ENV: "production"
+  VITE_GOOGLE_MAPS_API_KEY: "AIzaSyCExTp8r8aszeyxMO7JMbonn1JZdFJGK4s"
+
 handlers:
-  # Serve static assets
   - url: /(assets/.*)
     static_files: vite-project/dist/\1
     upload: vite-project/dist/assets/.*
@@ -19,10 +22,6 @@ handlers:
     static_files: vite-project/dist/\1
     upload: vite-project/dist/.*\.(js|css|ico|png|json)$
 
-  # All other routes go to index.html
   - url: /.*
     static_files: vite-project/dist/index.html
     upload: vite-project/dist/index.html
-
-env_variables:
-  NODE_ENV: "production"

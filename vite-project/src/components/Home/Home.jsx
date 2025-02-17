@@ -5,6 +5,12 @@ import AQIColorKey from '../AQIColorKey/AQIColorKey';
 
 const Home = ({ center, handlePlaceSelect }) => {
   const [showAirQuality, setShowAirQuality] = useState(false);
+  const [zoom, setZoom] = useState(12);
+
+  const handlePlaceSelectWithZoom = (location) => {
+    handlePlaceSelect(location);
+    setZoom(15); // Zoom in when a new location is selected
+  };
 
   return (
     <div className="app-content">
@@ -13,7 +19,7 @@ const Home = ({ center, handlePlaceSelect }) => {
         <div className="map-layout">
           <div className="map-sidebar">
             <div className="controls-container">
-              <SearchBox onPlaceSelect={handlePlaceSelect} />
+              <SearchBox onPlaceSelect={handlePlaceSelectWithZoom} />
               <button
                 onClick={() => setShowAirQuality(!showAirQuality)}
                 className="control-button"
@@ -23,7 +29,7 @@ const Home = ({ center, handlePlaceSelect }) => {
             </div>
           </div>
           <div className="map-wrapper">
-            <Map center={center} showAirQuality={showAirQuality} />
+            <Map center={center} showAirQuality={showAirQuality} zoom={zoom} />
           </div>
         </div>
         <AQIColorKey />

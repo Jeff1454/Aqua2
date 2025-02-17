@@ -1,30 +1,42 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 import { StandaloneSearchBox } from '@react-google-maps/api';
 import './SearchBox.css';
 
 const SearchBox = ({ onPlaceSelect }) => {
-  const searchBoxRef = useRef();
+  const [searchInput, setSearchInput] = useState("");
+  const [searchBox, setSearchBox] = useState(null);
 
-  const onPlacesChanged = () => {
-    const places = searchBoxRef.current.getPlaces();
-    if (places && places.length > 0) {
-      const location = {
-        lat: places[0].geometry.location.lat(),
-        lng: places[0].geometry.location.lng(),
-      };
-      onPlaceSelect(location);
+  const onLoad = ref => {
+    setSearchBox(ref);
+  };
+
+  const handleSearch = () => {
+    if (searchBox) {
+      const places = searchBox.getPlaces();
+      if (places && places.length > 0) {
+        const place = places[0];
+        const location = {
+          lat: place.geometry.location.lat(),
+          lng: place.geometry.location.lng(),
+        };
+        console.log('Selected location:', location);
+        onPlaceSelect(location);
+      }
     }
   };
 
   return (
     <div className="search-box">
       <StandaloneSearchBox
-        ref={searchBoxRef}
-        onPlacesChanged={onPlacesChanged}
+        onLoad={onLoad}
+        onPlacesChanged={handleSearch}
       >
         <input
           type="text"
           placeholder="Search for a location..."
+          className="search-input"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
         />
       </StandaloneSearchBox>
     </div>
